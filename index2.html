@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Penghitungan Gaji Pegawai</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css">
+	<!-- Custom CSS -->
+	<style>
+		/* CSS untuk Formulir Penghitungan Gaji */
+.card {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border-radius: 10px;
+	box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+	background-color: #007bff;
+	color: #ffffff;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+.card-header h2 {
+	margin-bottom: 0;
+}
+
+.card-body {
+	padding: 30px;
+}
+
+@media only screen and (max-width: 767px) {
+	.card-header h2 {
+		font-size: 1.5rem;
+	}
+}
+
+
+/* CSS untuk Hasil Penghitungan Gaji */
+.card:last-of-type {
+	display: none;
+}
+
+.loader-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 200px;
+}
+
+.loader {
+	border: 4px solid #f3f3f3;
+	border-top: 4px solid #007bff;
+	border-radius: 50%;
+	width: 30px;
+	height: 30px;
+	animation: spin 2s linear infinite;
+	margin-bottom: 20px;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.btn-hitung-gaji {
+	margin-top: 20px;
+	background-color: #007bff;
+	border-color: #007bff;
+}
+
+.btn-hitung-gaji:hover {
+	background-color: #0069d9;
+	border-color: #0062cc;
+}
+
+.btn-ulang {
+	margin-top: 20px;
+	background-color: #6c757d;
+	border-color: #6c757d;
+}
+
+.btn-ulang:hover {
+	background-color: #5a6268;
+	border-color: #545b62;
+}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="text-center my-5">Program Menghitung Gaji</h1>
+		<div class="row">
+			<div class="col-md-8 offset-md-2">
+				<div class="card">
+					<div class="card-header">
+						<h2 class="text-center">Formulir Penghitungan Gaji</h2>
+					</div>
+					<div class="card-body">
+						<form id="form-gaji">
+							<div class="row mb-3">
+								<label for="nama" class="col-sm-2 col-form-label">Nama Pegawai:</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="nama" required>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="jamKerja" class="col-sm-2 col-form-label">Jam Kerja Perhari:</label>
+								<div class="col-sm-10">
+									<input type="number" class="form-control" id="jamKerja" required>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="jamLembur" class="col-sm-2 col-form-label">Jam Lembur Perhari:</label								<div class="col-sm-10">
+									<input type="number" class="form-control" id="jamLembur" required>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<label for="gajiPerJam" class="col-sm-2 col-form-label">Gaji Per Jam:</label>
+								<div class="col-sm-10">
+									<input type="number" class="form-control" id="gajiPerJam" required>
+								</div>
+							</div>
+							<div class="text-center">
+								<button type="button" id="btn-hitung" class="btn btn-primary btn-hitung-gaji">Hitung Gaji</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h2 class="text-center">Hasil Penghitungan Gaji</h2>
+					</div>
+					<div class="card-body">
+						<div class="loader-wrapper">
+							<div class="loader"></div>
+							<p>Sedang menghitung gaji...</p>
+						</div>
+						<div class="result-wrapper"></div>
+						<div class="text-center">
+							<button type="button" id="btn-ulang" class="btn btn-secondary btn-ulang">Hitung Ulang</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery and Bootstrap Bundle (includes Popper) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+	<script>
+	$(document).ready(function() {
+		// Ketika tombol hitung gaji ditekan
+		$('#btn-hitung').on('click', function() {
+			// Ambil data dari form
+			var nama = $('#nama').val();
+			var jamKerja = $('#jamKerja').val();
+			var jamLembur = $('#jamLembur').val();
+			var gajiPerJam = $('#gajiPerJam').val();
+
+			// Validasi form
+			if (!nama || !jamKerja || !jamLembur || !gajiPerJam) {
+				alert('Mohon lengkapi semua data pada form.');
+				return;
+			}
+
+			// Tampilkan loader
+			$('.loader-wrapper').show();
+
+			// Hitung gaji
+			var gaji = (jamKerja * gajiPerJam) + (jamLembur * gajiPerJam * 1.5);
+
+			// Tampilkan hasil
+			setTimeout(function() {
+				$('.result-wrapper').html(`
+					<p><strong>Nama Pegawai:</strong> ${nama}</p>
+					<p><strong>Jam Kerja Perhari:</strong> ${jamKerja} jam</p>
+					<p><strong>Jam Lembur Perhari:</strong> ${jamLembur} jam</p>
+					<p><strong>Gaji Per Jam:</strong> Rp ${gajiPerJam.toLocaleString()}</p>
+					<p><strong>Gaji:</strong> Rp ${gaji.toLocaleString()}</p>
+				`);
+
+				// Sembunyikan loader
+				$('.loader-wrapper').hide();
+
+				// Sembunyikan form
+				$('.card:first-of-type').hide();
+
+				// Tampilkan hasil
+				$('.card:last-of-type').show();
+			}, 2000);
+		});
+
+		// Ketika tombol hitung ulang ditekan
+		$('#btn-ulang').on('click', function() {
+			// Bersihkan form
+			$('#form-gaji')[0].reset();
+
+			// Sembunyikan card hasil
+			$('.card:last-of-type').hide();
+
+			// Tampilkan form
+			$('.card:first-of-type').show();
+		});
+	});
+	</script>
+</body>
+</html>
